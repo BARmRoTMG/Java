@@ -24,6 +24,16 @@ public class MyActiveObject {
         queue.put(task);
     }
 
+    public <V> Future<V> submit(MyCallable<V> c) {
+        MyFuture<V> f = new MyFuture<>();
+
+        try {
+            execute(()-> f.set(c.call()));
+        } catch (InterruptedException e) { }
+
+        return f;
+    }
+
     // we want to let the tasks finish and only then stop, so we simply insert a stop task.
     public void shutDown() {
         try {
